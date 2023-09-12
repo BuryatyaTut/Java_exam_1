@@ -9,9 +9,7 @@ public class ParallelMergeSort<E extends Comparable<E>> {
     private List<E> list;
     private Comparator<? super E> comparator;
     private int size;
-
     private int maxThreads = 1;
-//    private int threadsCnt = 0;
 
     public ParallelMergeSort(List<E> list, Comparator<? super E> comparator, int threads) {
         this.list = list;
@@ -60,7 +58,7 @@ public class ParallelMergeSort<E extends Comparable<E>> {
 
     private void mergeAll(List<Integer> starts, List<Integer> ends) {
         List<E> tmp = new ArrayList<>();
-        while (someThreadDidntFinish(starts, ends)) {
+        while (isSubseProcessed(starts, ends)) {
             tmp.add(findMin(starts, ends));
         }
 
@@ -87,7 +85,7 @@ public class ParallelMergeSort<E extends Comparable<E>> {
     }
 
     // I don't understand what is doing function by it's name
-    boolean someThreadDidntFinish(List<Integer> starts, List<Integer> ends) {
+    boolean isSubseProcessed(List<Integer> starts, List<Integer> ends) {
         // May use stream API and foreach
         for (int i = 0; i < starts.size(); ++i) {
             if (starts.get(i) <= ends.get(i)) {
