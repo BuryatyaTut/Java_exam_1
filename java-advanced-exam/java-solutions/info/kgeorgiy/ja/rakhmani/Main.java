@@ -21,7 +21,7 @@ public class Main {
         }
         System.out.println("\n");
 
-        ParallelMergeSort mergeSort = new ParallelMergeSort<>(a, Integer::compare, numberOfThreads);
+        ParallelMergeSort<Integer> mergeSort = new ParallelMergeSort<>(a, Integer::compare, numberOfThreads);
         mergeSort.sort();
 
         for (int i = 0; i < n; ++i) {
