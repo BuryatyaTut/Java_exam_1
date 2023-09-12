@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ParallelMergeSort<E extends Comparable<E>> {
+    // :NOTE: Excess initialization -
     private List<E> list = new ArrayList<>();
     private Comparator<? super E> comparator = null;
     private int size = 0;
@@ -19,6 +20,7 @@ public class ParallelMergeSort<E extends Comparable<E>> {
         this.size = list.size();
     }
 
+    // :NOTE: value is returned and return
     public List<E> sort() throws InterruptedException {
         int threadsCnt = Math.max(1, Math.min(list.size(), maxThreads));
 
@@ -29,7 +31,9 @@ public class ParallelMergeSort<E extends Comparable<E>> {
         int remainder = list.size() % threadsCnt;
         int partSize = list.size() / threadsCnt;
 
+        // May use Stream API exchange using for (but if you exactly sure that you are right then you may don't do this)
         for (int i = 0, left = 0; i < threadsCnt; i++) {
+            // :NOTE: I don't understand, it may write more simple
             int right = left + partSize + (remainder-- >= 1 ? 1 : 0);
             int finalLeft = left;
 
@@ -40,13 +44,16 @@ public class ParallelMergeSort<E extends Comparable<E>> {
                 try {
                     mergeSort(finalLeft, right - 1);
                 } catch (InterruptedException e) {
+                    // Think about exceptions, it's not okey if thread catch interruptedException and don't stop
                     e.printStackTrace();
                 }
             }));
+
             workers.get(i).start();
             left = right;
         }
 
+        // May use Stream API
         for (int i = 0; i < threadsCnt; i++) {
             workers.get(i).join();
         }
@@ -82,7 +89,9 @@ public class ParallelMergeSort<E extends Comparable<E>> {
         return ans;
     }
 
+    // I don't understand what is doing function by it's name
     boolean someoneNotEnd(List<Integer> starts, List<Integer> ends) {
+        // May user stream API and foreach
         for (int i = 0; i < starts.size(); ++i) {
             if (starts.get(i) <= ends.get(i)) {
                 return true;
@@ -90,8 +99,10 @@ public class ParallelMergeSort<E extends Comparable<E>> {
         }
         return false;
     }
+// delete excess spaces
 
 
+    // why you throw Interrupted exception - this exception for threads, not for this functions
     public void mergeSort(int l, int r) throws InterruptedException {
         if (r == l) {
             return;
@@ -119,7 +130,7 @@ public class ParallelMergeSort<E extends Comparable<E>> {
             }
         }
 
-
+        // :NOTE: You may use Stream API
         for (int ind = 0; ind < tmp.size(); ++ind) {
             list.set(l1 + ind, tmp.get(ind));
         }
